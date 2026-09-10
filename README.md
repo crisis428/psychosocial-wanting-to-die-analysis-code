@@ -28,8 +28,9 @@ environment/                  Python/R environment information
 provenance/                   Run manifests, package versions, settings
 verification/                 Aggregate non-participant-level ML outputs
 docs/                         Run guides, variable dictionary, code map
-extras/                       Optional manuscript-workbook formatting helpers
 ```
+
+The two longest workflows are split into numbered `steps/` files for easier browsing on GitHub. Their top-level runner scripts execute those steps sequentially in one shared analysis environment; this is an organizational change only.
 
 ## Data availability and privacy
 
@@ -61,11 +62,17 @@ python analysis/02_regression/regression_analysis.py \
 
 ### Machine learning + SHAP
 
-Run `analysis/03_machine_learning_shap/machine_learning_nested_cv_shap.ipynb`.
+```bash
+python analysis/03_machine_learning_shap/machine_learning_nested_cv_shap.py
+```
 
 ### Network analysis
 
-Run `analysis/04_network/network_analysis.R`. Use `TEST_MODE <- TRUE` for a short code check and `FALSE` for the finalized computation.
+```bash
+Rscript analysis/04_network/network_analysis.R
+```
+
+Use `TEST_MODE <- TRUE` for a short network code check and `FALSE` for the finalized computation.
 
 ## Analysis settings preserved in this release
 
@@ -83,7 +90,7 @@ Run `analysis/04_network/network_analysis.R`. Use `TEST_MODE <- TRUE` for a shor
 
 ## Reproducing manuscript outputs
 
-`docs/MANUSCRIPT_CODE_MAP.md` maps the manuscript tables, figures, and sensitivity analyses to the corresponding public code files.
+`docs/MANUSCRIPT_CODE_MAP.md` maps the manuscript tables, figures, and sensitivity analyses to the corresponding public code files. Some composite tables and multi-panel figures were assembled manually from code-generated numerical results and component plots.
 
 ## Environment
 
