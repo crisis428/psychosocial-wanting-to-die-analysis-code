@@ -1,0 +1,35 @@
+# Restricted study data
+primary_cc.csv
+phq8_cc.csv
+categorical_sensitivity.csv
+**/primary_cc.csv
+**/phq8_cc.csv
+**/categorical_sensitivity.csv
+*participant*predictions*.csv
+all_outer_fold_predictions.csv
+aggregated_participant_predictions.csv
+
+# Participant-level or local checkpoint outputs
+full_results_checkpointed*/
+full_results_checkpointed*.zip
+checkpoints/
+errors/
+shap/checkpoints/
+*.npz
+
+# Generated analysis/reporting outputs
+regression_results/
+final_regression_results*/
+network_results_FINAL_v1/
+network_results_FINAL_v1.zip
+network_results_TEST/
+table_s4_ml_performance/
+figure3_network_panels/
+supplementary_network_figures/
+
+# Notebook/cache/system files
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db

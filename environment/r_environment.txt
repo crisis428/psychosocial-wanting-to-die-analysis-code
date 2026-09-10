@@ -1,0 +1,9 @@
+R version used for final network analysis: 4.5.2
+qgraph==1.9.8
+bootnet==1.8
+networktools==1.6.0
+ggplot2==4.0.3
+patchwork: required by reporting/figures/supplementary_network_figures.R
+
+Installation example:
+install.packages(c("qgraph", "bootnet", "networktools", "ggplot2", "patchwork"))

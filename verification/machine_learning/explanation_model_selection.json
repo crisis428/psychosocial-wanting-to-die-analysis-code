@@ -1,0 +1,10 @@
+{
+  "Best_Overall_Model": "CatBoost",
+  "Best_Overall_AUROC": 0.8417090402705545,
+  "Best_Tree_Model": "CatBoost",
+  "Best_Tree_AUROC": 0.8417090402705545,
+  "Selected_Explanation_Model": "CatBoost",
+  "Eligible_For_Primary_SHAP": true,
+  "Reason": "highest-AUROC model is a tree model",
+  "Noninferiority_AUROC_Margin": 0.01
+}

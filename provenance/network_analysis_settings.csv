@@ -1,0 +1,23 @@
+setting,value
+checkpoint_tag,jama_network_final_20260806_v1_FINAL_gamma0.5_nlambda100_lmr0.01_edge2000_case1000_seed20260806_md56fa1105e1168
+test_mode,FALSE
+source_file,primary_cc.csv
+source_md5,6fa1105e1168ae8027b2421eac2803d7
+EBIC_gamma,0.5
+n_lambda,100
+lambda_min_ratio,0.01
+post_EBIC_edge_filter,none
+edge_bootstraps,2000
+case_bootstraps,1000
+case_drop_min,0.05
+case_drop_max,0.75
+case_drop_levels,10
+cores,4
+seed,20260806
+analysis_script_layout,predictor-only spring layout estimated separately by group (diagnostic/analysis output)
+analysis_script_layout_rule,global PCA orientation/reflection and intentional vertical compression; no individual predictor-node relocation; outcome fixed above predictor layer
+layout_distance_preserving,no; vertical compression is an intentional visualization transform
+positive_edge,red solid
+negative_edge,blue solid
+publication_figure_layout,"fixed common layout using total-sample coordinates for total, male, and female panels"
+publication_figure_script,reporting/figures/figure3_network_fixed_layout.py

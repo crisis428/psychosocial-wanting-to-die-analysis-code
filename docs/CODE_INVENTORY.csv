@@ -1,0 +1,8 @@
+path,language,status,purpose
+analysis/01_descriptive/table1_descriptive_statistics.py,Python,FINAL,"Table 1 descriptive statistics, Welch t tests, Pearson chi-square tests"
+analysis/02_regression/regression_analysis.py,Python,FINAL,"Primary regression, splines, sensitivity analyses, sex interactions"
+analysis/03_machine_learning_shap/machine_learning_nested_cv_shap.py,Python,FINAL,"Repeated nested CV, bootstrap performance, calibration, held-out SHAP"
+analysis/04_network/network_analysis.R,R,FINAL,"Mixed correlations, EBICglasso, centrality, bridge EI, bootstrap"
+reporting/figures/figure3_network_fixed_layout.py,Python,FINAL,Publication Figure 3 fixed-layout network panels
+reporting/figures/supplementary_network_figures.R,R,FINAL,Supplementary Figure S5-S7 plotting from saved network results
+reporting/tables/table_s4_ml_performance.py,Python,FINAL,Supplementary Table S4 detailed ML performance

@@ -1,0 +1,17 @@
+{
+  "run_name": "checkpointed_ml_shap_py3109_v2",
+  "created_at_epoch": 1785200088.1470988,
+  "input_path": "primary_cc.csv (local restricted file; not included)",
+  "input_sha256": "c49f63ce914d9c4f3e1624d35646a34efe91981ec515f378d569a71f07ec3464",
+  "rows": 6605,
+  "events": 1850,
+  "seed": 42,
+  "outer_splits": 5,
+  "outer_repeats": 3,
+  "inner_splits": 5,
+  "models": ["LogisticRegression","DecisionTree","RandomForest","SVM","XGBoost","CatBoost"],
+  "groups": ["total","male","female"],
+  "predictors": ["age_years","sex_female","married_current","employed_corrected","living_alone","poor_subjective_physical_health","poor_subjective_mental_health","gad7_total","pss14_total","low_self_esteem_score","low_sense_of_belonging","low_perceived_social_equality","low_social_trust"],
+  "search_iterations": {"LogisticRegression":10,"DecisionTree":20,"RandomForest":20,"SVM":15,"XGBoost":25,"CatBoost":25},
+  "versions": {"python":"3.10.9","platform":"Windows-10-10.0.19045-SP0","numpy":"2.2.6","pandas":"2.2.3","scipy":"1.15.3","scikit-learn":"1.6.1","xgboost":"3.0.5","catboost":"1.2.8","shap":"0.48.0","matplotlib":"3.10.3","statsmodels":"0.14.4","joblib":"1.4.2","threadpoolctl":"3.5.0"}
+}
