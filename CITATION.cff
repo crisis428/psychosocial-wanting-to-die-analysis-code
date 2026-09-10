@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the associated manuscript and this software repository."
+title: "Analysis code for Psychosocial Factors Associated With Past-Year Thoughts of Wanting to Die in Korean Adults"
+type: software
+version: "2.0"
+date-released: 2026-09-10
+authors:
+  - family-names: Kim
+    given-names: KangHyun
+  - family-names: Choi
+    given-names: Jung Won
+  - family-names: Han
+    given-names: Hyun Wook
+repository-code: "https://github.com/crisis428/psychosocial-wanting-to-die-analysis-code"
