@@ -6,6 +6,12 @@ All steps execute in one shared global namespace, preserving the finalized scrip
 """
 from pathlib import Path
 
+try:
+    from IPython.display import display
+except ImportError:
+    def display(value):
+        print(value)
+
 STEP_DIR = Path(__file__).resolve().parent / "steps"
 for step in sorted(STEP_DIR.glob("step_*.py")):
     print(f"\n=== Running {step.name} ===")
