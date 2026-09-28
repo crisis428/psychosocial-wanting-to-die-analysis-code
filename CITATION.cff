@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-message: "If you use this code, please cite the associated manuscript and this software repository."
-title: "Analysis code for Psychosocial Factors Associated With Past-Year Thoughts of Wanting to Die in Korean Adults"
+message: "Please cite the associated manuscript and this software repository when using this code."
+title: "Analysis code for Psychosocial correlates of past-year thoughts of wanting to die in Korean adults across regression, machine learning and network analysis"
 type: software
-version: "2.0"
-date-released: 2026-09-10
+version: "2.1"
+date-released: 2026-09-28
 authors:
   - family-names: Kim
     given-names: KangHyun

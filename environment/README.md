@@ -1,9 +1,25 @@
 # Software environments
 
-The manuscript reports **Python 3.10.9** for regression/machine learning and **R 4.5.2** for network analysis.
+## Regression
 
-- `requirements_reference_python3109.txt` is the consolidated Python package snapshot retained with the finalized code collection.
-- `r_environment.txt` and `provenance/network_package_versions.csv` preserve the R version and key package versions used for network analysis.
-- The exact ML/SHAP package versions recorded at the finalized run are also stored in `provenance/ml_run_manifest.json`.
+Regression models are fitted in Python using statsmodels and patsy, with White (HC0) sandwich covariance. The code explicitly requests `cov_type='HC0'`. The consolidated requirements file below provides dependency information; it is not a separate record of the original regression execution environment.
 
-Because the original regression and ML code components were finalized in separate working environments, treat the consolidated requirements file as a reproducibility reference rather than a guarantee that every historical helper script was executed in one identical environment.
+## Machine learning and SHAP
+
+`provenance/ml_run_manifest.json` records the ML run: Python 3.10.9, statsmodels 0.14.4, scikit-learn 1.6.1, CatBoost 1.2.8, SHAP 0.48.0, and the remaining package versions. These versions describe the ML run, not all regression scripts.
+
+## Networks
+
+Network analyses used R 4.5.2. `r_environment.txt`, `provenance/network_package_versions.csv`, and the R session records under `provenance/` contain the network package information.
+
+## Dependencies and tests
+
+`requirements_reference_python3109.txt` is the consolidated Python dependency snapshot from the code collection. Its existing package pins are unchanged. Use the component-specific records above when interpreting this reference file.
+
+From the repository root, run the synthetic-data covariance test with:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The test compares the fitted binomial-logit HC0 covariance with the direct White sandwich formula and uses no participant data.

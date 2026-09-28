@@ -1,5 +1,15 @@
 # Changelog
 
+## v2.1 — 2026-09-28
+
+- Updated the manuscript title in the English and Korean READMEs and citation metadata.
+- Matched descriptive and categorical-regression response labels to Supplementary Table S7. Numeric codes, category order, and reference categories are unchanged.
+- Replaced `cov_type='HC3'` with explicit `cov_type='HC0'` in the regression script and corrected the generated estimator label. The earlier GLM calls used statsmodels' uncorrected White sandwich path, not leverage-adjusted HC3. See the [statsmodels 0.14.6 implementation](https://github.com/statsmodels/statsmodels/blob/v0.14.6/statsmodels/base/covtype.py).
+- Added a synthetic-data test of the covariance against the direct White sandwich formula. A synthetic-data comparison in statsmodels 0.14.6 gave identical coefficients and covariance matrices for the old and updated primary, PHQ-8, categorical, and interaction specifications. This test did not use study data.
+- Separated regression dependency information from the ML-specific Python version and run manifest.
+- Aligned data-availability documentation with the manuscript and the IRB requirement for deletion at the end of the approved data-use period. Participant-level data remain excluded.
+- Preserved the existing aggregate result files, ML and network code, numerical model specifications, and prior version history. No study-data analysis was rerun for this update.
+
 ## v2.0 — 2026-09-10
 
 Repository-presentation and portability release. **No statistical model, estimate, result, or inferential decision was changed.**

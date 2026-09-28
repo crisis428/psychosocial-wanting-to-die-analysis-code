@@ -1,9 +1,7 @@
 # Data availability
 
-Participant-level study data are not included in this repository.
+Individual participant data are not publicly available because the IRB-approved data-use period has ended and external transfer or release is prohibited by the study's ethics approval and institutional data-governance requirements. The IRB approval requires deletion of participant-level data at the end of the approved data-use period.
 
-The study data cannot be externally transferred or publicly shared under the applicable IRB approval and institutional data-governance requirements. Accordingly, this public repository contains analysis code, header-only input templates, software/environment information, provenance records, and aggregate verification outputs only.
+The repository contains analysis code, header-only input templates, software information, computational settings, and aggregate outputs. Participant-level records, outcomes, predictions, identifiers, split indices, and checkpoint archives are not distributed and cannot be supplied on request.
 
-The internal machine-learning checkpoint archive is also excluded because it contains participant-level outcomes, predicted probabilities, row identifiers, and split indices.
-
-Researchers may use the code with data that follow the column structures described in `data_templates/` and `docs/VARIABLES.md`.
+The code may be applied to other data that researchers are authorized to process, using the column structures described in `data_templates/` and `docs/VARIABLES.md`. The synthetic-data software tests require no study records.

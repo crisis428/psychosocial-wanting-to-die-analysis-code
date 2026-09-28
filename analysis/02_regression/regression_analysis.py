@@ -27,11 +27,11 @@ LABELS = {
  'low_social_trust':'Lower social trust (per category)'}
 CAT_LABELS = {
  'marital_status_4cat':{1:'Single vs married',3:'Widowed vs married',4:'Divorced vs married'},
- 'poor_subjective_physical_health':{1:'Very good vs good',3:'Moderate vs good',4:'Poor vs good'},
- 'poor_subjective_mental_health':{1:'Very good vs good',3:'Moderate vs good',4:'Poor vs good'},
- 'low_sense_of_belonging':{1:'Strongly connected vs somewhat connected',3:'Somewhat disconnected vs somewhat connected',4:'Strongly disconnected vs somewhat connected'},
- 'low_perceived_social_equality':{1:'Very high vs high equality',3:'Moderate vs high equality',4:'Low vs high equality'},
- 'low_social_trust':{1:'Very high vs high trust',3:'Moderate vs high trust',4:'Low vs high trust'}}
+ 'poor_subjective_physical_health':{1:'Very healthy vs fairly healthy',3:'Not healthy vs fairly healthy',4:'Very poor vs fairly healthy'},
+ 'poor_subjective_mental_health':{1:'Very healthy vs fairly healthy',3:'Not healthy vs fairly healthy',4:'Very poor vs fairly healthy'},
+ 'low_sense_of_belonging':{1:'Very much vs much',3:'Little vs much',4:'Very little vs much'},
+ 'low_perceived_social_equality':{1:'Very equal vs equal',3:'Unequal vs equal',4:'Very unequal vs equal'},
+ 'low_social_trust':{1:'Can be trusted very much vs generally can be trusted',3:'Generally cannot be trusted vs generally can be trusted',4:'Cannot be trusted at all vs generally can be trusted'}}
 
 @dataclass
 class Spec:
@@ -69,7 +69,7 @@ def fit_bundle(data, use_phq=False):
     cols += [(data['pss14_total']-means['pss14_total'])/sds['pss14_total'],(data['low_self_esteem_score']-means['low_self_esteem_score'])/sds['low_self_esteem_score']]
     names += ['pss_z','selfesteem_z']
     for v in BINARY+ORDINAL: cols.append(data[v]); names.append(v)
-    X=np.column_stack(cols); model=sm.GLM(y,X,family=sm.families.Binomial()).fit(cov_type='HC3')
+    X=np.column_stack(cols); model=sm.GLM(y,X,family=sm.families.Binomial()).fit(cov_type='HC0')
     return Bundle(model,X,names,y,data,specs,means,sds)
 
 def scenario(b, overrides):
@@ -143,7 +143,7 @@ def fit_cat(primary,cat,b):
             if lev==2: continue
             inds[v].append(len(names)); cols.append((x==lev).astype(float)); names.append(f'{v}[{lev}]')
     cols += [primary['employed_corrected'],primary['living_alone']]; names += ['employed_corrected','living_alone']
-    X=np.column_stack(cols); m=sm.GLM(y,X,family=sm.families.Binomial()).fit(cov_type='HC3')
+    X=np.column_stack(cols); m=sm.GLM(y,X,family=sm.families.Binomial()).fit(cov_type='HC0')
     tr=[]
     for i,n in enumerate(names):
         if n=='Intercept' or n.startswith('gad7_rcs'): continue
@@ -182,11 +182,11 @@ def coding_tests(primary,cat,b):
 
 def interactions(b):
     sex=b.raw['sex_female']; tests=[]; gidx=[i for i,n in enumerate(b.names) if n.startswith('gad7_rcs')]
-    X=np.column_stack([b.X]+[b.X[:,i]*sex for i in gidx]); m=sm.GLM(b.y,X,family=sm.families.Binomial()).fit(cov_type='HC3'); R=np.zeros((len(gidx),X.shape[1]))
+    X=np.column_stack([b.X]+[b.X[:,i]*sex for i in gidx]); m=sm.GLM(b.y,X,family=sm.families.Binomial()).fit(cov_type='HC0'); R=np.zeros((len(gidx),X.shape[1]))
     for j in range(len(gidx)):R[j,b.X.shape[1]+j]=1
     t=m.wald_test(R,scalar=True); tests.append(['GAD-7 spline × female sex',len(gidx),float(t.statistic),float(t.pvalue),None,None,None])
     for label,name in [('PSS-14 × female sex','pss_z'),('Low self-esteem × female sex','selfesteem_z'),('Lower belonging × female sex','low_sense_of_belonging'),('Lower equality × female sex','low_perceived_social_equality'),('Lower trust × female sex','low_social_trust'),('Currently married × female sex','married_current')]:
-        i=b.names.index(name); X=np.column_stack([b.X,b.X[:,i]*sex]); m=sm.GLM(b.y,X,family=sm.families.Binomial()).fit(cov_type='HC3'); beta=float(m.params[-1]); se=float(m.bse[-1])
+        i=b.names.index(name); X=np.column_stack([b.X,b.X[:,i]*sex]); m=sm.GLM(b.y,X,family=sm.families.Binomial()).fit(cov_type='HC0'); beta=float(m.params[-1]); se=float(m.bse[-1])
         tests.append([label,1,float((beta/se)**2),float(m.pvalues[-1]),math.exp(beta),math.exp(beta-1.96*se),math.exp(beta+1.96*se)])
     adj=holm([r[3] for r in tests]); return [r[:4]+[float(a)]+r[4:]+['Do not retain' if a>=.05 else 'Retain'] for r,a in zip(tests,adj)]
 
@@ -215,10 +215,10 @@ def main():
     write(out/'sex_interactions_final.csv',['interaction','df','wald_statistic','p_value','holm_adjusted_p','interaction_or','ci_low','ci_high','decision'],interactions(b))
     pred=b.model.predict(b.X); null=sm.GLM(b.y,np.ones((n,1)),family=sm.families.Binomial()).fit(); diag=[['N',n,''],['Outcome events',int(b.y.sum()),''],['Converged',bool(b.model.converged),''],['Log likelihood',float(b.model.llf),''],['AIC',float(b.model.aic),''],['BIC',pb,'Manual likelihood-based BIC'],['McFadden pseudo-R2',float(1-b.model.llf/null.llf),''],['Apparent AUROC',float(roc_auc_score(b.y,pred)),'Association-model diagnostic'],['Apparent AUPRC',float(average_precision_score(b.y,pred)),'Association-model diagnostic'],['Apparent Brier score',float(brier_score_loss(b.y,pred)),'Association-model diagnostic']]
     write(out/'primary_model_diagnostics.csv',['metric','value','note'],diag)
-    mp=sm.GLM(b.y,b.X,family=sm.families.Poisson(link=sm.families.links.Log())).fit(cov_type='HC3'); mpp=mp.predict(b.X); ed=[['Modified Poisson converged',bool(mp.converged)],['Maximum fitted mean',float(mpp.max())],['Fitted means >1, n',int((mpp>1).sum())],['Final estimator decision','Robust logistic regression plus marginal standardization'],['Reason','Modified Poisson generated fitted means above 1 in the final spline model; logistic standardization preserves valid probabilities.']]
+    mp=sm.GLM(b.y,b.X,family=sm.families.Poisson(link=sm.families.links.Log())).fit(cov_type='HC0'); mpp=mp.predict(b.X); ed=[['Modified Poisson converged',bool(mp.converged)],['Maximum fitted mean',float(mpp.max())],['Fitted means >1, n',int((mpp>1).sum())],['Final estimator decision','Robust logistic regression plus marginal standardization'],['Reason','Modified Poisson generated fitted means above 1 in the final spline model; logistic standardization preserves valid probabilities.']]
     write(out/'estimator_decision.csv',['item','value'],ed)
     vars=['age_years','gad7_total','phq8_total','pss14_total','low_self_esteem_score']+BINARY+ORDINAL; cols=[np.ones(n)]+[((q[v]-q[v].mean())/q[v].std(ddof=1) if v not in BINARY else q[v]) for v in vars]; X=np.column_stack(cols); vf=[[v,float(variance_inflation_factor(X,i+1))] for i,v in enumerate(vars)]; write(out/'phq8_linear_proxy_vif.csv',['variable','vif'],vf)
-    dec=[['Outcome','Past-year thoughts of wanting to die','Exact survey-item wording'],['Primary estimator','Robust logistic regression','HC3 standard errors'],['Common-outcome interpretation','Marginal standardization','Adjusted prevalence, prevalence ratios, and prevalence differences'],['Age','Linear per 10 years','No evidence of nonlinearity'],['GAD-7',f'4-knot RCS: {b.specs["gad7_total"].knots}','Strong nonlinearity evidence'],['PSS-14','Linear per SD','No evidence of nonlinearity'],['Low self-esteem','Linear per SD','No evidence of nonlinearity'],['4-level ordinal variables','One-category linear trend in primary model','Parsimonious; categorical coding retained as sensitivity'],['Marital status','Currently married vs not in primary model','4-category coding retained as sensitivity'],['PHQ-8',f'4-knot RCS in sensitivity: {bq.specs["phq8_total"].knots}','Sensitivity only because of overlap with GAD-7'],['Sex interactions','Not retained','No prespecified interaction survived Holm adjustment'],['Modified Poisson','Not selected as final estimator','119 fitted means exceeded 1 in the spline model']]
+    dec=[['Outcome','Past-year thoughts of wanting to die','Exact survey-item wording'],['Primary estimator','Robust logistic regression','White (HC0) sandwich standard errors'],['Common-outcome interpretation','Marginal standardization','Adjusted prevalence, prevalence ratios, and prevalence differences'],['Age','Linear per 10 years','No evidence of nonlinearity'],['GAD-7',f'4-knot RCS: {b.specs["gad7_total"].knots}','Strong nonlinearity evidence'],['PSS-14','Linear per SD','No evidence of nonlinearity'],['Low self-esteem','Linear per SD','No evidence of nonlinearity'],['4-level ordinal variables','One-category linear trend in primary model','Parsimonious; categorical coding retained as sensitivity'],['Marital status','Currently married vs not in primary model','4-category coding retained as sensitivity'],['PHQ-8',f'4-knot RCS in sensitivity: {bq.specs["phq8_total"].knots}','Sensitivity only because of overlap with GAD-7'],['Sex interactions','Not retained','No prespecified interaction survived Holm adjustment'],['Modified Poisson','Not selected as final estimator','119 fitted means exceeded 1 in the spline model']]
     write(out/'final_model_decisions.csv',['component','final_specification','rationale'],dec)
     manifest={'n':n,'events':int(b.y.sum()),'primary_gad_knots':b.specs['gad7_total'].knots,'phq8_gad_knots':bq.specs['gad7_total'].knots,'phq8_knots':bq.specs['phq8_total'].knots,'primary_converged':bool(b.model.converged),'phq8_converged':bool(bq.model.converged),'categorical_converged':bool(cm.converged),'primary_aic':float(b.model.aic),'primary_bic':pb,'categorical_aic':float(cm.aic),'categorical_bic':cb}
     (out/'analysis_manifest.json').write_text(json.dumps(manifest,indent=2),encoding='utf-8'); print(json.dumps(manifest,indent=2))
